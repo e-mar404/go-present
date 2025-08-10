@@ -1,20 +1,24 @@
 # Present
 
-Main ideas / purpose of tool
+### MVP
 
-- will revolve around md
+- Takes a directory of markdown files to render
+    - Files will be ordered with the following convention 
+      (slide#_title_subtitle.md) with the subtitle being optional, so some 
+      examples would be:
+        - 001_Introduction_Functional-Programming.md
+        - 002_Persistent-Data-Structures.md
 
-- A quick way to present md files
+    Note: Using underscores to divide the sections of slide number, title and
+    subtitle let us use dashes to signify a space. Will also accept file names
+    that already have spaces it is just personal that I don't like to put spaces
+    on file names.
 
-- make a version of `less` but for md files
+- Renders the md into html and displays it
 
-- Have code execution of code snippets inside the md files
+- Hitting enter or "l" will advance the slide (go to the next md file)
 
-- should not expect to be a text editor, this is focused of viewing
+- Hitting shift + enter or "h" will go back a slide
 
-- use charm tools to make the tool pretty and easy to deploy , specially the md
-  rendering
-
-- This is a simpler version of a bigger idea i had of a book that can be
-  accessed through ssh, if this works then it can be easily accommodated to
-  create a book
+- Hitting "r" will run the code snippet on a slide, if there is one and show the
+  output
