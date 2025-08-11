@@ -22,3 +22,13 @@
 
 - Hitting "r" will run the code snippet on a slide, if there is one and show the
   output
+
+## Usage
+
+I am thinking of something similar to this flow:
+
+1. run the command `present` and pass the path of the directory that has the
+   slides.
+2. this should convert all the md slides into html files and then start a http
+   fileserver 
+3. while presenting all the keymaps above should work as intended
