@@ -16,19 +16,32 @@
 
 - Renders the md into html and displays it
 
-- Hitting enter or "l" will advance the slide (go to the next md file)
+- Hitting ctrl-n will advance the slide (go to the next md file)
 
-- Hitting shift + enter or "h" will go back a slide
+- Hitting ctrl-p will go back a slide
 
-- Hitting "r" will run the code snippet on a slide, if there is one and show the
+- Hitting leader-rc will run the code snippet on a slide, if there is one and show the
   output
 
 ## Usage
 
 I am thinking of something similar to this flow:
 
-1. run the command `present` and pass the path of the directory that has the
-   slides.
-2. this should convert all the md slides into html files and then start a http
-   fileserver 
-3. while presenting all the keymaps above should work as intended
+1. open a directory on vim and start presenting with a command / toggle
+
+2. the plugin will start a go server that takes the md files that the lua client
+   sends and will convert them to html
+
+3. the go server will serve those files, listen for updates of the lua client,
+   and open the page (prob some localhost:42069 like address)
+
+4. while presenting the neovim client should have speaker notes and should be
+   able to run code that will and show the output on both neovim and on the
+   website
+
+5. pressing next and prev on neovim should change the slide on both neovim and
+   the website (this means that what ever page the neovim instance is showing
+   should be mirrored on the website)
+
+Note: editing text on the md file in the neovim instance should be fairly quick to
+   change on the website as well
