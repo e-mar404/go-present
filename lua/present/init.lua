@@ -3,18 +3,19 @@ local M = {}
 M.present = function ()
   local info = debug.getinfo(1, "S")
   local current_path = info.source:sub(2)
-  -- i want to change lua/present/init.lua with main.go
   local server_path = current_path:gsub("lua/present/init.lua", "main.go")
 
-  print "starting presentation..."
-
   local cmd = {"go", "run", server_path}
-  local _job_id = vim.fn.jobstart(cmd, {
+  local job_id = vim.fn.jobstart(cmd, {
     on_stdout = function (id, data, event)
-      print(id, vim.inspect(data), event)
+      print(vim.inspect(data), event)
     end,
-    stdout_buffered = true,
+    rpc = true, -- on_stdout gets disabled if this is on
   })
+
+  local result = vim.fn.rpcrequest(job_id, "Present.NextSlide")
+
+  print("result from sending rpc request to Presnt.NextSlide: ", result)
 end
 
 return M
