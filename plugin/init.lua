@@ -22,6 +22,6 @@ client:connect(host, rpc_port, function (err)
 
     print("server handle: ", handle, ", pid: ", pid)
   else
-    vim.print "server is already started"
+    vim.print "rpc server is already started"
   end
 end)
