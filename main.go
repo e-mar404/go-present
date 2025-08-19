@@ -12,6 +12,7 @@ import (
 
 type Present struct {
 	Path string
+	PathSet chan bool
 }
 
 func (p *Present) SetPath(arg string, reply *string) error {	
@@ -19,6 +20,7 @@ func (p *Present) SetPath(arg string, reply *string) error {
 	p.Path = arg
 	*reply = "path has been set to " + arg
 	fmt.Printf("SetPath: %v\n", *reply)
+	p.PathSet <- true
 	return nil
 }
 
@@ -29,8 +31,7 @@ func (p *Present) NextSlide(args any, reply *string) error {
 }
 
 func main() {
-	pathSet := make(chan bool)
-	presentor := new(Present)
+	presentor := &Present{PathSet: make(chan bool)}
 
 	go func() {
 		rpc.Register(presentor)
@@ -51,27 +52,17 @@ func main() {
 				continue
 			}
 
-			if presentor.Path != "" {
-				pathSet <- true
-			}
-
 			go rpc.ServeCodec(codec.MsgpackSpecRpc.ServerCodec(conn, &mh))
 		}
 
 	}()
 
-	receivedPath := <- pathSet
+	<- presentor.PathSet
 
-	go func() {
-		if receivedPath {
-			http.Handle("/", http.FileServer(http.Dir(presentor.Path)))
-			fmt.Println("serving files from ", presentor.Path, " on :8080")
-			err := http.ListenAndServe(":8080", nil) 
-			if err != nil {
-				fmt.Println("error starting server")
-			}
-		}
-	}()
-
-	select {}
+	http.Handle("/", http.FileServer(http.Dir(presentor.Path)))
+	fmt.Println("serving files from ", presentor.Path, " on :8080")
+	err := http.ListenAndServe(":8080", nil) 
+	if err != nil {
+		fmt.Println("error starting server")
+	}
 }
