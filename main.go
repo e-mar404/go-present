@@ -2,67 +2,8 @@ package main
 
 import (
 	"fmt"
-	"net"
-	"net/http"
-	"net/rpc"
-	"reflect"
-
-	"github.com/hashicorp/go-msgpack/codec"
 )
 
-type Present struct {
-	Path string
-	PathSet chan bool
-}
-
-func (p *Present) SetPath(arg string, reply *string) error {	
-	// should prob check to see if path has md files
-	p.Path = arg
-	*reply = "path has been set to " + arg
-	fmt.Printf("SetPath: %v\n", *reply)
-	p.PathSet <- true
-	return nil
-}
-
-func (p *Present) NextSlide(args any, reply *string) error {
-	*reply = "going to next slide"
-	fmt.Printf("doing cmd: %v\n", *reply)
-	return nil
-}
-
 func main() {
-	presentor := &Present{PathSet: make(chan bool)}
-
-	go func() {
-		rpc.Register(presentor)
-
-		listener, err := net.Listen("tcp", ":8081")
-		if err != nil {
-			fmt.Println("PRC listening error: ", err)
-		}
-		fmt.Println("MessagePack RPC server running on :8081")
-
-		var mh codec.MsgpackHandle
-		mh.MapType = reflect.TypeOf(map[string]any(nil))
-
-		for {
-			conn, err := listener.Accept()
-			if err != nil {
-				fmt.Println("RPC error accepting connection: ", err)
-				continue
-			}
-
-			go rpc.ServeCodec(codec.MsgpackSpecRpc.ServerCodec(conn, &mh))
-		}
-
-	}()
-
-	<- presentor.PathSet
-
-	http.Handle("/", http.FileServer(http.Dir(presentor.Path)))
-	fmt.Println("serving files from ", presentor.Path, " on :8080")
-	err := http.ListenAndServe(":8080", nil) 
-	if err != nil {
-		fmt.Println("error starting server")
-	}
+	fmt.Println("Presenting some dir that has md files")
 }

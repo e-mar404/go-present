@@ -14,34 +14,36 @@
     that already have spaces it is just personal that I don't like to put spaces
     on file names.
 
-- Renders the md into html and displays it
+- Renders the md files into an alternate terminal
 
 - Hitting ctrl-n will advance the slide (go to the next md file)
 
 - Hitting ctrl-p will go back a slide
 
-- Hitting leader-rc will run the code snippet on a slide, if there is one and show the
+- Hitting ctrl-r will run the code snippet on a slide, if there is one and show the
   output
+
+- There should be a cursor
 
 ## Usage
 
 I am thinking of something similar to this flow:
 
-1. open a directory on vim and start presenting with a command / toggle
+1. use command `go-present /path/to/dir or /path/to/md/file`
 
-2. the plugin will start a go server that takes the md files that the lua client
-   sends and will convert them to html
+2. while presenting the md will be formatted in a way that it shows the slides
+   content and the speaker notes
 
-3. the go server will serve those files, listen for updates of the lua client,
-   and open the page (prob some localhost:42069 like address)
+3. using nst, prev, or run commands will modify what is shown
 
-4. while presenting the neovim client should have speaker notes and should be
-   able to run code that will and show the output on both neovim and on the
-   website
+Note: should think about what editing a file should look like (maybe ctrl-e
+should open the file in the default editor)
 
-5. pressing next and prev on neovim should change the slide on both neovim and
-   the website (this means that what ever page the neovim instance is showing
-   should be mirrored on the website)
+### Why not nvim plugin?
 
-Note: editing text on the md file in the neovim instance should be fairly quick to
-   change on the website as well
+Started doing a neovim plugin and html server but that was pushing neovim too
+much to what it isn't and to keep the unix philosophy "do one thing and do it
+well".
+
+Therefore a specific cli for presenting md files and not using another tool that
+requires to write an abstraction over it.
