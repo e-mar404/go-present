@@ -25,8 +25,10 @@ func main() {
 			html.WithXHTML(),
 		),
 	)
-	source := []byte(`# title 1
-some text`)
+	source := []byte(` x
+# title 1
+some tet
+x`)
 
 	var buf bytes.Buffer
 	if err := md.Convert(source, &buf); err != nil {
