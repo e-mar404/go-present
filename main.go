@@ -14,13 +14,13 @@ func main() {
 	md := goldmark.New(
 		goldmark.WithExtensions(
 			extension.GFM,
-			&slides{},
+			slides{},
 		), // will need to do my own extension to be able to identify slide syntax
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(), // probably do not need this?? or maybe the ability to identify a slide syntax goes in here instead of the extension
 		),
 		// will have to make my own rendered to use lipgloss
-		goldmark.WithRendererOptions( 
+		goldmark.WithRendererOptions(
 			html.WithHardWraps(),
 			html.WithXHTML(),
 		),

@@ -6,53 +6,63 @@ import (
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/text"
+	"github.com/yuin/goldmark/util"
 )
 
-type slideNode struct {
-	ast.BaseBlock
+type slides struct{}
+type slideBlockRenderer struct{}
+
+func (e slides) Extend(m goldmark.Markdown) {
+	m.Parser().AddOptions(
+		parser.WithBlockParsers(
+			util.Prioritized(slideBlockParser{}, 500),
+		),
+	)
+
+	m.Renderer().AddOptions(renderer.WithNodeRenderers(
+		util.Prioritized(slideBlockRenderer{}, 500),
+	),
+	)
 }
 
-type slideBlockParser struct {}
+var _ parser.BlockParser = slideBlockParser{}
 
-var defaultSlideBlockParser = &slideBlockParser{}
+type slideBlockParser struct{}
 
-func NewSlideBlockParser() parser.BlockParser {
-	return defaultSlideBlockParser
+func (s slideBlockParser) Trigger() []byte {
+	return []byte{':'}
 }
 
-// the parse.BlockParser implementation is for now since i do not know yet how I should be modifying the parser i just want to see the md block "run" somehow
-func (b *slideBlockParser) Trigger() []byte {
-	return []byte{'x'}
-}
-
-func (b *slideBlockParser) Open(parent ast.Node, reader text.Reader, pc parser.Context) (ast.Node, parser.State) {
-	fmt.Println("slidesBlockParser called Open")
-	withNewline := text.FindClosureOptions{
-		Newline: true,
+// Open implements parser.BlockParser.
+func (s slideBlockParser) Open(parent ast.Node, reader text.Reader, pc parser.Context) (ast.Node, parser.State) {
+	line, _ := reader.PeekLine()
+	pos := pc.BlockOffset()
+	if pos < 0 || line[pos] != ':' {
+		return nil, parser.NoChildren
 	}
-	segments, found := text.Reader.FindClosure(reader, 'x', 'x', withNewline)
-	fmt.Println(segments, found)
-	return nil, parser.NoChildren
+	slideChar := line[pos]
+
+	fmt.Println(slideChar)
+
+	return nil, parser.Continue
 }
 
-func (b *slideBlockParser) Continue(node ast.Node, reader text.Reader, pc parser.Context) parser.State {
-	return parser.Continue
+// Continue implements parser.BlockParser.
+func (s slideBlockParser) Continue(node ast.Node, reader text.Reader, pc parser.Context) parser.State {
+	panic("unimplemented")
 }
 
-func (b *slideBlockParser) Close(node ast.Node, reader text.Reader, pc parser.Context) {
+// Close implements parser.BlockParser.
+func (s slideBlockParser) Close(node ast.Node, reader text.Reader, pc parser.Context) {
+	panic("unimplemented")
 }
 
-func (b *slideBlockParser) CanInterruptParagraph() bool {
+func (s slideBlockParser) CanInterruptParagraph() bool {
 	return true
 }
 
-func (b *slideBlockParser) CanAcceptIndentedLine() bool {
-	return false 
+func (s slideBlockParser) CanAcceptIndentedLine() bool {
+	return false
 }
-
-type slides struct {}
-
-func (s *slides) Extend(md goldmark.Markdown) {
-}
-
