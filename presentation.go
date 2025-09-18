@@ -1,7 +1,9 @@
-package main
+package gopresent 
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -9,6 +11,7 @@ import (
 )
 
 type presentation struct {
+	basePath string
 	curSlide	int // maybe would want to be a pointer to which file is the current one?
 	slideFiles []os.DirEntry 
 	SlideRenderer *SlideRenderer
@@ -28,23 +31,25 @@ func (p presentation) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "q", "ctrl+c", "esc":
 				return p, tea.Quit
 
-			// needs to be adapted to be able to use SlideRenderer
-			// case "ctrl+n":
-			// 	if p.curSlide < len(p.slideFiles) - 1 {
-			// 		p.curSlide++
-			// 	}
-			// 	fmt.Println(p.slideFiles[p.curSlide])
-			// 	// content, _ := p.SlideRenderer.Render(p.slideFiles[p.curSlide])
-			// 	// p.viewport.SetContent(content)
-			// 	return p, nil
-			//
-			// case "ctrl+p":
-			// 	if p.curSlide > 0 {
-			// 		p.curSlide--
-			// 	}
-			// 	// content, _ := p.SlideRenderer.Render(p.slideFiles[p.curSlide])
-			// 	// p.viewport.SetContent(content)
-			// 	return p, nil
+			case "ctrl+n":
+				if p.curSlide < len(p.slideFiles) - 1 {
+					p.curSlide++
+				}
+				renderedContent, err := p.SlideRenderer.Render("hello")
+				if err != nil {
+					fmt.Println(err)
+				}
+				
+				p.viewport.SetContent(renderedContent)
+				return p, nil
+
+			case "ctrl+p":
+				if p.curSlide > 0 {
+					p.curSlide--
+				}
+				// content, _ := p.SlideRenderer.Render(p.slideFiles[p.curSlide])
+				// p.viewport.SetContent(content)
+				return p, nil
 
 			default:
 				var cmd tea.Cmd
@@ -67,8 +72,8 @@ func (p presentation) View() string {
 }
 
 // maybe at some point i should think about making this function more extensible and calling it something like PresentationWithOptions that takes in any number of functions that take in a presentation and return it with its own config (should use an interface)
-func NewPresentation(path string) (*presentation, error) {
-	entries, _ :=	os.ReadDir(path)
+func NewPresentation(basePath string) (*presentation, error) {
+	entries, _ :=	os.ReadDir(basePath)
 	var files []os.DirEntry
 	for _, entry := range entries {
 		if !entry.IsDir() {
@@ -76,8 +81,17 @@ func NewPresentation(path string) (*presentation, error) {
 		}
 	}
 	
-	renderer, _ := NewSlideRenderer()
-	initContent, _ := renderer.Render(files[0])
+	renderer, err := NewSlideRenderer(
+		WithGlamourDefault(),
+	)
+	if err != nil {
+		return &presentation{}, nil
+	}
+
+
+	fullPath := filepath.Join("md", files[0].Name())
+	fileContent, _ := os.ReadFile(fullPath)
+	initContent, _ := renderer.Render(string(fileContent))
 
 	vp := viewport.New(78, 20)
 	vp.SetContent(initContent)
@@ -87,8 +101,13 @@ func NewPresentation(path string) (*presentation, error) {
 		PaddingRight(2)
 
 	return &presentation{
+		basePath: basePath,
 		slideFiles: files, 
 		curSlide: 0,
 		viewport: vp,
 	}, nil
+}
+
+func (p *presentation) NextSlide() string {
+	return "not implemented"
 }

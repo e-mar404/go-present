@@ -1,12 +1,6 @@
-package main
+package gopresent 
 
 import (
-	"fmt"
-	"io"
-	"io/fs"
-	"os"
-	"path/filepath"
-
 	"github.com/charmbracelet/glamour"
 )
 
@@ -37,7 +31,7 @@ type SlideRendererOptions func(*SlideRendrer) error
 */
 
 type Renderer interface {
-	Render(f fs.DirEntry) (string, error)
+	Render(string) (string, error)
 }
 
 type SlideRenderer struct {
@@ -46,46 +40,32 @@ type SlideRenderer struct {
 	renderer Renderer
 }
 
-func (sr SlideRenderer) Render(f fs.DirEntry) (string, error) {
-	return sr.renderer.Render(f)
+func (sr SlideRenderer) Render(in string) (string, error) {
+	return sr.renderer.Render(in)
 }
 
 type SlideRendererOption func(*SlideRenderer) error 
 
-type defaultSlideRenderer struct {}
-func (dsr *defaultSlideRenderer) Render(f fs.DirEntry) (string, error) {
-	if f.IsDir() {
-		return "", fmt.Errorf("cannot make a slide form a directory")
+func WithGlamourDefault () SlideRendererOption {
+	return func(sr *SlideRenderer) error {
+		glamourRenderer, err := glamour.NewTermRenderer(
+			glamour.WithAutoStyle(),
+		)
+		sr.renderer = glamourRenderer
+		return err
 	}
-
-	// this is hard coded for now, should change later
-	file, err := os.Open(filepath.Join("md", f.Name()))
-	if err != nil {
-		return "", fmt.Errorf("cannot open slide file: %v", err)
-	}
-
-	rawContent, _ := io.ReadAll(file)
-
-	renderer, err := glamour.NewTermRenderer(
-		glamour.WithAutoStyle(),
-	)
-	if err != nil {
-		return "", err
-	}
-
-	renderedContent, err := renderer.Render(string(rawContent))
-	if err != nil {
-		return "", err
-	}
-
-	return renderedContent, nil
 }
 
 func NewSlideRenderer(options ...SlideRendererOption) (*SlideRenderer, error) {
 	sr := &SlideRenderer{
 		Width: 80,
 		Height: 24,
-		renderer: &defaultSlideRenderer{},
+	}
+
+	for _, opt := range options {
+		if err := opt(sr); err != nil {
+			return &SlideRenderer{}, nil
+		}
 	}
 
 	return sr, nil

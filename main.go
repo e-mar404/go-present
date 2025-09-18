@@ -1,4 +1,4 @@
-package main
+package gopresent 
 
 import (
 	"fmt"
@@ -14,9 +14,9 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
+	
 	if _, err := tea.NewProgram(presentation, tea.WithAltScreen()).Run(); err != nil {
-		fmt.Println("Bummer, couldn't start presentation:", err)
+		fmt.Println("Bummer, there was an error during the presentation:", err)
 		os.Exit(1)
 	}
 }
