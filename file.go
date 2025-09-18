@@ -1,7 +1,10 @@
 package gopresent
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 func getMdFilesFrom(path string) ([]os.DirEntry, error) {
@@ -12,7 +15,9 @@ func getMdFilesFrom(path string) ([]os.DirEntry, error) {
 
 	var files []os.DirEntry
 	for _, entry := range entries {
-		if !entry.IsDir() {
+		ext := strings.ToLower(filepath.Ext(entry.Name()))
+		fmt.Println(ext)
+		if !entry.IsDir() && ext == ".md"{
 			files = append(files, entry)
 		}
 	}

@@ -47,3 +47,9 @@ well".
 
 Therefore a specific cli for presenting md files and not using another tool that
 requires to write an abstraction over it.
+
+## Todo's
+
+✓ Get md files from a given path + tests
+- create sliderenderer struct + tests
+- create presentation struct + tests

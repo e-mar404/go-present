@@ -32,10 +32,13 @@ func TestGetMdFilesFromEmpty(t *testing.T) {
 			path: "./testdata/TestGetFiles/OnlyMdFiles",
 			expected: []string{"001.md", "002.md"},
 		},
-		// everything under this comment does not work rn
 		{
 			path: "./testdata/TestGetFiles/OnlyNonMdFiles",
 			expected: []string{},
+		},
+		{
+			path: "./testdata/TestGetFiles/MixedFiles",
+			expected: []string{"001.md", "002.md"},
 		},
 	}
 
@@ -43,6 +46,10 @@ func TestGetMdFilesFromEmpty(t *testing.T) {
 		got, err := getMdFilesFrom(tc.path)
 		if err != nil && !errors.Is(err, tc.err) {
 			t.Errorf("Unexpected error received. Got: %v, Expected: %v\n", err, tc.err)
+		}
+
+		if len(got) != len(tc.expected) {
+				t.Errorf("List of files is not what is expected. Got: %v, Expected:%v", fileNames(got), tc.expected)
 		}
 
 		for i, f := range got {
