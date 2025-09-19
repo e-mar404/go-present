@@ -71,7 +71,7 @@ func (p presentation) View() string {
 	return p.viewport.View()
 }
 
-// maybe at some point i should think about making this function more extensible and calling it something like PresentationWithOptions that takes in any number of functions that take in a presentation and return it with its own config (should use an interface)
+// TODO: maybe at some point i should think about making this function more extensible and calling it something like PresentationWithOptions that takes in any number of functions that take in a presentation and return it with its own config (should use an interface)
 func NewPresentation(basePath string) (*presentation, error) {
 	entries, _ := os.ReadDir(basePath)
 	var files []os.DirEntry
@@ -88,16 +88,27 @@ func NewPresentation(basePath string) (*presentation, error) {
 		return &presentation{}, nil
 	}
 
-	fullPath := filepath.Join("md", files[0].Name())
-	fileContent, _ := os.ReadFile(fullPath)
-	initContent, _ := renderer.Render(string(fileContent))
-
 	vp := viewport.New(78, 20)
-	vp.SetContent(initContent)
 	vp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("62")).
 		PaddingRight(2)
+
+	if len(files) == 0 {
+		vp.SetContent("No content to show")
+		return &presentation{
+			basePath:   basePath,
+			slideFiles: files,
+			curSlide:   0,
+			viewport:   vp,
+		}, nil
+	}
+
+	fullPath := filepath.Join("md", files[0].Name())
+	fileContent, _ := os.ReadFile(fullPath)
+	initContent, _ := renderer.Render(string(fileContent))
+
+	vp.SetContent(initContent)
 
 	return &presentation{
 		basePath:   basePath,
@@ -107,6 +118,6 @@ func NewPresentation(basePath string) (*presentation, error) {
 	}, nil
 }
 
-func (p *presentation) NextSlide() string {
-	return "not implemented"
+func (p *presentation) NextSlide() (presentation, tea.Cmd) {
+	return *p, nil
 }
