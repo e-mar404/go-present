@@ -16,28 +16,28 @@ func fileNames(d []os.DirEntry) []string {
 
 func TestGetMdFilesFromEmpty(t *testing.T) {
 	tt := []struct {
-		path string
+		path     string
 		expected []string
-		err error
+		err      error
 	}{
 		{
 			path: "./testdata/TestGetFiles/NonExistent",
-			err: os.ErrNotExist,
+			err:  os.ErrNotExist,
 		},
 		{
-			path: "./testdata/TestGetFiles/Empty",
+			path:     "./testdata/TestGetFiles/Empty",
 			expected: []string{},
 		},
 		{
-			path: "./testdata/TestGetFiles/OnlyMdFiles",
+			path:     "./testdata/TestGetFiles/OnlyMdFiles",
 			expected: []string{"001.md", "002.md"},
 		},
 		{
-			path: "./testdata/TestGetFiles/OnlyNonMdFiles",
+			path:     "./testdata/TestGetFiles/OnlyNonMdFiles",
 			expected: []string{},
 		},
 		{
-			path: "./testdata/TestGetFiles/MixedFiles",
+			path:     "./testdata/TestGetFiles/MixedFiles",
 			expected: []string{"001.md", "002.md"},
 		},
 	}
@@ -49,11 +49,11 @@ func TestGetMdFilesFromEmpty(t *testing.T) {
 		}
 
 		if len(got) != len(tc.expected) {
-				t.Errorf("List of files is not what is expected. Got: %v, Expected:%v", fileNames(got), tc.expected)
+			t.Errorf("List of files is not what is expected. Got: %v, Expected:%v", fileNames(got), tc.expected)
 		}
 
 		for i, f := range got {
-			if f.Name() != tc.expected[i]{
+			if f.Name() != tc.expected[i] {
 				t.Errorf("List of files is not what is expected. Got: %v, Expected:%v", fileNames(got), tc.expected)
 			}
 		}

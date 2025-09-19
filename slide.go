@@ -1,4 +1,4 @@
-package gopresent 
+package gopresent
 
 import (
 	"github.com/charmbracelet/glamour"
@@ -9,8 +9,8 @@ type Renderer interface {
 }
 
 type SlideRenderer struct {
-	Height int
-	Width int
+	Height   int
+	Width    int
 	renderer Renderer
 }
 
@@ -18,7 +18,7 @@ func (sr SlideRenderer) Render(in string) (string, error) {
 	return sr.renderer.Render(in)
 }
 
-type SlideRendererOption func(*SlideRenderer) error 
+type SlideRendererOption func(*SlideRenderer) error
 
 func WithGlamourDefault() SlideRendererOption {
 	return func(sr *SlideRenderer) error {
@@ -32,7 +32,7 @@ func WithGlamourDefault() SlideRendererOption {
 
 func NewSlideRenderer(options ...SlideRendererOption) (*SlideRenderer, error) {
 	sr := &SlideRenderer{
-		Width: 80,
+		Width:  80,
 		Height: 24,
 	}
 

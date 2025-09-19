@@ -8,7 +8,7 @@ import (
 )
 
 func getMdFilesFrom(path string) ([]os.DirEntry, error) {
-	entries, err :=	os.ReadDir(path)
+	entries, err := os.ReadDir(path)
 	if err != nil {
 		return nil, err
 	}
@@ -17,7 +17,7 @@ func getMdFilesFrom(path string) ([]os.DirEntry, error) {
 	for _, entry := range entries {
 		ext := strings.ToLower(filepath.Ext(entry.Name()))
 		fmt.Println(ext)
-		if !entry.IsDir() && ext == ".md"{
+		if !entry.IsDir() && ext == ".md" {
 			files = append(files, entry)
 		}
 	}

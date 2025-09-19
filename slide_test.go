@@ -1,4 +1,4 @@
-package gopresent 
+package gopresent
 
 import (
 	"testing"
