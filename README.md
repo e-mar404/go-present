@@ -51,5 +51,5 @@ requires to write an abstraction over it.
 ## Todo's
 
 ✓ Get md files from a given path + tests
-- create sliderenderer struct + tests
+✓ create sliderenderer struct + tests
 - create presentation struct + tests
