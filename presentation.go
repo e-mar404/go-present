@@ -1,7 +1,6 @@
 package gopresent
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -35,12 +34,12 @@ func (p presentation) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if p.curSlide < len(p.slideFiles)-1 {
 				p.curSlide++
 			}
-			renderedContent, err := p.SlideRenderer.Render("hello")
-			if err != nil {
-				fmt.Println(err)
-			}
+			// renderedContent, err := p.SlideRenderer.Render("hello")
+			// if err != nil {
+			// 	fmt.Println(err)
+			// }
 
-			p.viewport.SetContent(renderedContent)
+			// p.viewport.SetContent(renderedContent)
 			return p, nil
 
 		case "ctrl+p":
@@ -118,6 +117,6 @@ func NewPresentation(basePath string) (*presentation, error) {
 	}, nil
 }
 
-func (p *presentation) NextSlide() (presentation, tea.Cmd) {
-	return *p, nil
+func (p *presentation) NextSlide() (string, tea.Cmd) {
+	return "No content to show", nil
 }
