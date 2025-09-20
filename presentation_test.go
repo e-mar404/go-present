@@ -1,6 +1,7 @@
 package gopresent
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -9,30 +10,39 @@ func TestNextSlide(t *testing.T) {
 	tt := []struct {
 		path           string
 		nextSlideCount int
-		expected       string
+		expectedSlide int
+		expectedOut       string
 	}{
 		{
 			path:           "./testdata/TestNextSlide/Empty",
-			nextSlideCount: 1,
-			expected:       "No content to show",
+			nextSlideCount: 0,
+			expectedSlide: -1,
+			expectedOut:       "No content to show",
 		},
-		// {
-		// 	path: "./testdata/TestNextSlide/Empty",
-		// 	nextSlideCount: 1,
-		// 	expected: "No content to show",
-		// },
-		// {
-		// 	// call next when the dir only has one file
-		// 	path: "./testdata/TestNextSlide/OneFile",
-		// 	nextSlideCount: 1,
-		// 	expected: "one",
-		// },
-		// {
-		// 	// call next 3 times when the dir has 2 files
-		// },
-		// {
-		// 	// call next once when the dir has 2 file
-		// },
+		{
+			path: "./testdata/TestNextSlide/Empty",
+			nextSlideCount: 1,
+			expectedSlide: -1,
+			expectedOut:       "No content to show",
+		},
+		{
+			path: "./testdata/TestNextSlide/OneFile",
+			nextSlideCount: 0,
+			expectedSlide: 0,
+			expectedOut: "one",
+		},
+		{
+			path: "./testdata/TestNextSlide/OneFile",
+			nextSlideCount: 1,
+			expectedSlide: 0,
+			expectedOut: "one",
+		},
+		{
+			path: "./testdata/TestNextSlide/ThreeFiles",
+			nextSlideCount: 1,
+			expectedSlide: 1,
+			expectedOut: "two",
+		},
 	}
 
 	for _, tc := range tt {
@@ -41,13 +51,16 @@ func TestNextSlide(t *testing.T) {
 			t.Errorf("unable to create presentation with path: %v, err: %v\n", tc.path, err)
 		}
 
-		var got string
 		for range tc.nextSlideCount {
-			got, _ = p.NextSlide()
+			p, _ = p.NextSlide()
 		}
 
-		if got != tc.expected {
-			t.Errorf("Expected content from NextSlide is not what is expected. Got: %v, Expected: %v\n", got, tc.expected)
+		if p.curSlide != tc.expectedSlide {
+			t.Errorf("Slide pointer is not correct. Got: %v, Expected: %v\n", p.curSlide, tc.expectedSlide)
+		}
+
+		if !strings.Contains(p.viewport.View(), tc.expectedOut) {
+			t.Errorf("Viewport did not contain expected output. Got:\n%v\n, Expected to contain: %v\n", p.viewport.View(), tc.expectedOut)
 		}
 	}
 }
