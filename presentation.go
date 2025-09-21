@@ -1,4 +1,4 @@
-package gopresent
+package main
 
 import (
 	"fmt"
@@ -32,18 +32,7 @@ func (p presentation) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return p, tea.Quit
 
 		case "ctrl+n":
-			// i just want to return p.NextSlide() instead of all the things below
-
-			// if p.curSlide < len(p.slideFiles)-1 {
-			// 	p.curSlide++
-			// }
-			// renderedContent, err := p.SlideRenderer.Render("hello")
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
-
-			// p.viewport.SetContent(renderedContent)
-			return p, nil
+			return p, p.NextSlide()
 
 		case "ctrl+p":
 			if p.curSlide > 0 {

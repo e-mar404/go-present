@@ -1,4 +1,4 @@
-package gopresent
+package main
 
 import (
 	"fmt"
