@@ -1,46 +1,72 @@
 package main
-
 import (
 	"strings"
 	"testing"
 )
 
-func TestNextSlide(t *testing.T) {
+func TestPrevNextSlide(t *testing.T) {
 	tt := []struct {
 		path           string
+		prevSlideCount int
 		nextSlideCount int
 		expectedSlide  int
 		expectedOut    string
 	}{
 		{
-			path:           "./testdata/TestNextSlide/Empty",
+			path:           "./testdata/TestPrevNextSlide/Empty",
+			prevSlideCount: 0,
 			nextSlideCount: 0,
 			expectedSlide:  -1,
 			expectedOut:    "No content to show",
 		},
 		{
-			path:           "./testdata/TestNextSlide/Empty",
+			path:           "./testdata/TestPrevNextSlide/Empty",
+			prevSlideCount: 0,
 			nextSlideCount: 1,
 			expectedSlide:  -1,
 			expectedOut:    "No content to show",
 		},
 		{
-			path:           "./testdata/TestNextSlide/OneFile",
+			path:           "./testdata/TestPrevNextSlide/OneFile",
+			prevSlideCount: 0,
 			nextSlideCount: 0,
 			expectedSlide:  0,
 			expectedOut:    "one",
 		},
 		{
-			path:           "./testdata/TestNextSlide/OneFile",
+			path:           "./testdata/TestPrevNextSlide/OneFile",
+			prevSlideCount: 0,
 			nextSlideCount: 1,
 			expectedSlide:  0,
 			expectedOut:    "one",
 		},
 		{
-			path:           "./testdata/TestNextSlide/ThreeFiles",
+			path:           "./testdata/TestPrevNextSlide/ThreeFiles",
+			prevSlideCount: 0,
 			nextSlideCount: 1,
 			expectedSlide:  1,
 			expectedOut:    "two",
+		},
+		{
+			path: "./testdata/TestPrevNextSlide/Empty",
+			nextSlideCount: 0,
+			prevSlideCount: 0,
+			expectedSlide: -1,
+			expectedOut: "No content to show",
+		},
+		{
+			path: "./testdata/TestPrevNextSlide/Empty",
+			nextSlideCount: 0,
+			prevSlideCount: 1,
+			expectedSlide: -1,
+			expectedOut: "No content to show",
+		},
+		{
+			path: "./testdata/TestPrevNextSlide/OneFile",
+			nextSlideCount: 0,
+			prevSlideCount: 1,
+			expectedSlide: 0,
+			expectedOut: "one",
 		},
 	}
 
@@ -54,61 +80,10 @@ func TestNextSlide(t *testing.T) {
 			p.NextSlide()
 		}
 
-		if p.curSlide != tc.expectedSlide {
-			t.Errorf("Slide pointer is not correct. Got: %v, Expected: %v\n", p.curSlide, tc.expectedSlide)
-		}
-
-		if !strings.Contains(p.viewport.View(), tc.expectedOut) {
-			t.Errorf("Viewport did not contain expected output. Got:\n%v\n, Expected to contain: %v\n", p.viewport.View(), tc.expectedOut)
-		}
-	}
-}
-
-func TestPrevSlide(t *testing.T) {
-	tt := []struct {
-		path string
-		nextSlideCount int
-		prevSlideCount int
-		expectedSlide int
-		expectedOut string 
-	}{
-		{
-			path: "./testdata/TestPrevSlide/Empty",
-			nextSlideCount: 0,
-			prevSlideCount: 0,
-			expectedSlide: -1,
-			expectedOut: "No content to show",
-		},
-		{
-			path: "./testdata/TestPrevSlide/Empty",
-			nextSlideCount: 0,
-			prevSlideCount: 1,
-			expectedSlide: -1,
-			expectedOut: "No content to show",
-		},
-		{
-			path: "./testdata/TestPrevSlide/OneFile",
-			nextSlideCount: 0,
-			prevSlideCount: 1,
-			expectedSlide: 0,
-			expectedOut: "one",
-		},
-	}
-
-	for _, tc := range tt {
-		p, err := NewPresentation(tc.path)
-		if err != nil {
-			t.Errorf("Unable to create presentation: %v\n", err)
-		}
-
 		for range tc.nextSlideCount {
-			p.NextSlide()
-		}
-
-		for range tc.prevSlideCount {
 			p.PrevSlide()
 		}
-		
+
 		if p.curSlide != tc.expectedSlide {
 			t.Errorf("Slide pointer is not correct. Got: %v, Expected: %v\n", p.curSlide, tc.expectedSlide)
 		}
@@ -118,4 +93,3 @@ func TestPrevSlide(t *testing.T) {
 		}
 	}
 }
-
