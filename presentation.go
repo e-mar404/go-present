@@ -74,24 +74,20 @@ func (p presentation) View() string {
 }
 
 // TODO: maybe at some point i should think about making this function more extensible and calling it something like PresentationWithOptions that takes in any number of functions that take in a presentation and return it with its own config (should use an interface)
-func NewPresentation(basePath string) (presentation, error) {
-	fmt.Println("reading from ", basePath)
+func NewPresentation(basePath string) (*presentation, error) {
 	entries, _ := os.ReadDir(basePath)
 	var files []os.DirEntry
 	for _, entry := range entries {
-		fmt.Println(entry)
 		if !entry.IsDir() {
 			files = append(files, entry)
 		}
 	}
 
-	fmt.Printf("dir files: %v\n", files)
-
 	renderer, err := NewSlideRenderer(
 		WithGlamourDefault(),
 	)
 	if err != nil {
-		return presentation{}, nil
+		return &presentation{}, nil
 	}
 
 	vp := viewport.New(78, 20)
@@ -102,11 +98,12 @@ func NewPresentation(basePath string) (presentation, error) {
 
 	if len(files) == 0 {
 		vp.SetContent("No content to show")
-		return presentation{
-			basePath:   basePath,
-			slideFiles: files,
-			curSlide:   -1,
-			viewport:   vp,
+		return &presentation{
+			basePath:      basePath,
+			slideFiles:    files,
+			curSlide:      -1,
+			viewport:      vp,
+			SlideRenderer: renderer,
 		}, nil
 	}
 
@@ -116,23 +113,23 @@ func NewPresentation(basePath string) (presentation, error) {
 
 	vp.SetContent(initContent)
 
-
-	return presentation{
-		basePath:   basePath,
-		slideFiles: files,
-		curSlide:   0,
-		viewport:   vp,
+	return &presentation{
+		basePath:      basePath,
+		slideFiles:    files,
+		curSlide:      0,
+		viewport:      vp,
+		SlideRenderer: renderer,
 	}, nil
 }
 
-func (p presentation) NextSlide() (presentation, tea.Cmd) {
-	if p.curSlide == -1 {
-		return p, nil
+func (p *presentation) NextSlide() tea.Cmd {
+	if p.curSlide == -1 || p.curSlide >= len(p.slideFiles)-1 {
+		return nil
 	}
 
 	p.curSlide++
+
 	path := filepath.Join(p.basePath, p.slideFiles[p.curSlide].Name())
-	fmt.Printf("using file %v, with curslide num: %v\n", path, p.curSlide)
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Printf("err reading file: %v\n", err)
@@ -142,7 +139,8 @@ func (p presentation) NextSlide() (presentation, tea.Cmd) {
 	if err != nil {
 		fmt.Printf("err rendering file: %v\n", err)
 	}
+
 	p.viewport.SetContent(renderedStr)
-	
-	return p, nil
+
+	return nil
 }

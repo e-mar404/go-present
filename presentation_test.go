@@ -5,44 +5,43 @@ import (
 	"testing"
 )
 
-
 func TestNextSlide(t *testing.T) {
 	tt := []struct {
 		path           string
 		nextSlideCount int
-		expectedSlide int
-		expectedOut       string
+		expectedSlide  int
+		expectedOut    string
 	}{
 		{
 			path:           "./testdata/TestNextSlide/Empty",
 			nextSlideCount: 0,
-			expectedSlide: -1,
-			expectedOut:       "No content to show",
+			expectedSlide:  -1,
+			expectedOut:    "No content to show",
 		},
 		{
-			path: "./testdata/TestNextSlide/Empty",
+			path:           "./testdata/TestNextSlide/Empty",
 			nextSlideCount: 1,
-			expectedSlide: -1,
-			expectedOut:       "No content to show",
+			expectedSlide:  -1,
+			expectedOut:    "No content to show",
 		},
-		// {
-		// 	path: "./testdata/TestNextSlide/OneFile",
-		// 	nextSlideCount: 0,
-		// 	expectedSlide: 0,
-		// 	expectedOut: "one",
-		// },
-		// {
-		// 	path: "./testdata/TestNextSlide/OneFile",
-		// 	nextSlideCount: 1,
-		// 	expectedSlide: 0,
-		// 	expectedOut: "one",
-		// },
-		// {
-		// 	path: "./testdata/TestNextSlide/ThreeFiles",
-		// 	nextSlideCount: 1,
-		// 	expectedSlide: 1,
-		// 	expectedOut: "two",
-		// },
+		{
+			path:           "./testdata/TestNextSlide/OneFile",
+			nextSlideCount: 0,
+			expectedSlide:  0,
+			expectedOut:    "one",
+		},
+		{
+			path:           "./testdata/TestNextSlide/OneFile",
+			nextSlideCount: 1,
+			expectedSlide:  0,
+			expectedOut:    "one",
+		},
+		{
+			path:           "./testdata/TestNextSlide/ThreeFiles",
+			nextSlideCount: 1,
+			expectedSlide:  1,
+			expectedOut:    "two",
+		},
 	}
 
 	for _, tc := range tt {
@@ -52,7 +51,7 @@ func TestNextSlide(t *testing.T) {
 		}
 
 		for range tc.nextSlideCount {
-			p, _ = p.NextSlide()
+			p.NextSlide()
 		}
 
 		if p.curSlide != tc.expectedSlide {

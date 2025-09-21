@@ -14,7 +14,7 @@ type SlideRenderer struct {
 	renderer Renderer
 }
 
-func (sr SlideRenderer) Render(in string) (string, error) {
+func (sr *SlideRenderer) Render(in string) (string, error) {
 	return sr.renderer.Render(in)
 }
 

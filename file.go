@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func getMdFilesFrom(path string) ([]os.DirEntry, error) {
+func mdFilesFrom(path string) ([]os.DirEntry, error) {
 	entries, err := os.ReadDir(path)
 	if err != nil {
 		return nil, err

@@ -43,7 +43,7 @@ func TestGetMdFilesFromEmpty(t *testing.T) {
 	}
 
 	for _, tc := range tt {
-		got, err := getMdFilesFrom(tc.path)
+		got, err := mdFilesFrom(tc.path)
 		if err != nil && !errors.Is(err, tc.err) {
 			t.Errorf("Unexpected error received. Got: %v, Expected: %v\n", err, tc.err)
 		}
