@@ -64,19 +64,16 @@ func (p presentation) View() string {
 
 // TODO: maybe at some point i should think about making this function more extensible and calling it something like PresentationWithOptions that takes in any number of functions that take in a presentation and return it with its own config (should use an interface)
 func NewPresentation(basePath string) (*presentation, error) {
-	entries, _ := os.ReadDir(basePath)
-	var files []os.DirEntry
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			files = append(files, entry)
-		}
+	files, err := mdFilesFrom(basePath)
+	if err != nil {
+		return &presentation{}, err
 	}
 
 	renderer, err := NewSlideRenderer(
 		WithGlamourDefault(),
 	)
 	if err != nil {
-		return &presentation{}, nil
+		return &presentation{}, err 
 	}
 
 	vp := viewport.New(78, 20)
@@ -131,5 +128,9 @@ func (p *presentation) NextSlide() tea.Cmd {
 
 	p.viewport.SetContent(renderedStr)
 
+	return nil
+}
+
+func (p *presentation) PrevSlide() tea.Cmd {
 	return nil
 }
