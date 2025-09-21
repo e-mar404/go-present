@@ -35,12 +35,7 @@ func (p presentation) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return p, p.NextSlide()
 
 		case "ctrl+p":
-			if p.curSlide > 0 {
-				p.curSlide--
-			}
-			// content, _ := p.SlideRenderer.Render(p.slideFiles[p.curSlide])
-			// p.viewport.SetContent(content)
-			return p, nil
+			return p, p.PrevSlide()
 
 		default:
 			var cmd tea.Cmd
@@ -73,7 +68,7 @@ func NewPresentation(basePath string) (*presentation, error) {
 		WithGlamourDefault(),
 	)
 	if err != nil {
-		return &presentation{}, err 
+		return &presentation{}, err
 	}
 
 	vp := viewport.New(78, 20)
@@ -108,29 +103,42 @@ func NewPresentation(basePath string) (*presentation, error) {
 	}, nil
 }
 
+// TODO: need to implement error message tea cmd
 func (p *presentation) NextSlide() tea.Cmd {
 	if p.curSlide == -1 || p.curSlide >= len(p.slideFiles)-1 {
 		return nil
 	}
-
 	p.curSlide++
+	p.setCurSlide()
+	return nil
+}
 
+// TODO: need to implement error message tea cmd
+func (p *presentation) PrevSlide() tea.Cmd {
+	if p.curSlide <= 0 {
+		return nil
+	}
+	p.curSlide--
+	p.setCurSlide()
+	return nil
+}
+
+// TODO: need to implement error message tea cmd
+func (p *presentation) setCurSlide() tea.Cmd {
 	path := filepath.Join(p.basePath, p.slideFiles[p.curSlide].Name())
 	raw, err := os.ReadFile(path)
 	if err != nil {
-		fmt.Printf("err reading file: %v\n", err)
+		fmt.Printf("could not read file %v, got error: %v\n", path, err)
+		return nil
 	}
 
 	renderedStr, err := p.SlideRenderer.renderer.Render(string(raw))
 	if err != nil {
-		fmt.Printf("err rendering file: %v\n", err)
+		fmt.Printf("could not render contents from file %v, got error: %v\n", path, err)
+		return nil
 	}
 
 	p.viewport.SetContent(renderedStr)
 
-	return nil
-}
-
-func (p *presentation) PrevSlide() tea.Cmd {
 	return nil
 }
