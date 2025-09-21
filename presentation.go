@@ -120,19 +120,13 @@ func NewPresentation(basePath string) (presentation, error) {
 	return presentation{
 		basePath:   basePath,
 		slideFiles: files,
-		curSlide:   -1,
+		curSlide:   0,
 		viewport:   vp,
 	}, nil
 }
 
 func (p presentation) NextSlide() (presentation, tea.Cmd) {
-	if len(p.slideFiles) == 0 || p.curSlide >= len(p.slideFiles)-1 {
-		return p, nil
-	}
-
 	if p.curSlide == -1 {
-		p.curSlide = 0
-		fmt.Println("using already set content")	
 		return p, nil
 	}
 

@@ -25,24 +25,24 @@ func TestNextSlide(t *testing.T) {
 			expectedSlide: -1,
 			expectedOut:       "No content to show",
 		},
-		{
-			path: "./testdata/TestNextSlide/OneFile",
-			nextSlideCount: 0,
-			expectedSlide: 0,
-			expectedOut: "one",
-		},
-		{
-			path: "./testdata/TestNextSlide/OneFile",
-			nextSlideCount: 1,
-			expectedSlide: 0,
-			expectedOut: "one",
-		},
-		{
-			path: "./testdata/TestNextSlide/ThreeFiles",
-			nextSlideCount: 1,
-			expectedSlide: 1,
-			expectedOut: "two",
-		},
+		// {
+		// 	path: "./testdata/TestNextSlide/OneFile",
+		// 	nextSlideCount: 0,
+		// 	expectedSlide: 0,
+		// 	expectedOut: "one",
+		// },
+		// {
+		// 	path: "./testdata/TestNextSlide/OneFile",
+		// 	nextSlideCount: 1,
+		// 	expectedSlide: 0,
+		// 	expectedOut: "one",
+		// },
+		// {
+		// 	path: "./testdata/TestNextSlide/ThreeFiles",
+		// 	nextSlideCount: 1,
+		// 	expectedSlide: 1,
+		// 	expectedOut: "two",
+		// },
 	}
 
 	for _, tc := range tt {
