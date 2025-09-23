@@ -5,12 +5,15 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
 type presentation struct {
+	keyMap keyMap
+	help help.Model
 	basePath      string
 	curSlide      int
 	slideFiles    []os.DirEntry
@@ -43,8 +46,9 @@ func (p presentation) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return p, cmd
 		}
 	case tea.WindowSizeMsg:
-		p.viewport.Height = msg.Height
+		p.viewport.Height = msg.Height - 1
 		p.viewport.Width = msg.Width
+		p.help.Width = msg.Width
 
 		return p, nil
 
@@ -54,7 +58,7 @@ func (p presentation) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (p presentation) View() string {
-	return p.viewport.View()
+	return p.viewport.View() + "\n" + p.help.View(p.keyMap)
 }
 
 // TODO: maybe at some point i should think about making this function more extensible and calling it something like PresentationWithOptions that takes in any number of functions that take in a presentation and return it with its own config (should use an interface)
@@ -80,6 +84,8 @@ func NewPresentation(basePath string) (*presentation, error) {
 	if len(files) == 0 {
 		vp.SetContent("No content to show")
 		return &presentation{
+			keyMap: keys,
+			help: help.New(),
 			basePath:      basePath,
 			slideFiles:    files,
 			curSlide:      -1,
@@ -95,6 +101,8 @@ func NewPresentation(basePath string) (*presentation, error) {
 	vp.SetContent(initContent)
 
 	return &presentation{
+		keyMap: keys,
+		help: help.New(),
 		basePath:      basePath,
 		slideFiles:    files,
 		curSlide:      0,
