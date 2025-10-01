@@ -22,4 +22,4 @@ func mdFilesFrom(path string) ([]os.DirEntry, error) {
 	return files, nil
 }
 
-// todo: getFilesBy... then some sort of filter
+// todo: getFilesBy ... then some sort of filter

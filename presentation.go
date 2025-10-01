@@ -69,7 +69,7 @@ func NewPresentation(basePath string) (*presentation, error) {
 	}
 
 	renderer, err := NewSlideRenderer(
-		WithGlamourDefault(),
+		WithRawText(),
 	)
 	if err != nil {
 		return &presentation{}, err

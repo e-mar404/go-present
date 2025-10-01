@@ -30,6 +30,13 @@ func WithGlamourDefault() SlideRendererOption {
 	}
 }
 
+func WithRawText() SlideRendererOption {
+	return func(sr *SlideRenderer) error {
+		sr.renderer = rawTextRenderer{}				
+		return nil
+	}
+}
+
 func NewSlideRenderer(options ...SlideRendererOption) (*SlideRenderer, error) {
 	sr := &SlideRenderer{
 		Width:  80,

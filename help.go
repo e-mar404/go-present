@@ -15,11 +15,11 @@ func (km keyMap) ShortHelp() []key.Binding{
 }
 
 // TODO: where is this applied to, only saw the short help come up when running application
-// func (km keyMap) FullHelp() [][]key.Binding{
-// 	return [][]key.Binding {
-// 		{km.CtrlP, km.CtrlN, km.Quit},
-// 	}
-// }
+func (km keyMap) FullHelp() [][]key.Binding{
+	return [][]key.Binding {
+		{km.CtrlP, km.CtrlN, km.Quit},
+	}
+}
 
 var keys = keyMap {
 	CtrlP: key.NewBinding(
